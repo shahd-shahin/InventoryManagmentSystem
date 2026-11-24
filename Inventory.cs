@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace InventoryManagmentSystem
 {
@@ -35,6 +34,39 @@ namespace InventoryManagmentSystem
         public IReadOnlyList<Product> GetAllProducts()
         {
             return products.AsReadOnly();
+        }
+        public bool EditProduct(string currentName, string? newName, decimal? newPrice, int? newQuantity)
+        {
+            Product? product = FindProduct(currentName);
+
+            if (product == null)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(newName))
+            {
+                Product? other = FindProduct(newName);
+
+                if (other != null && other != product)
+                {
+                    return false;
+                }
+
+                product.Name = newName.Trim();
+            }
+
+            if (newPrice.HasValue)
+            {
+                product.Price = newPrice.Value;
+            }
+
+            if (newQuantity.HasValue)
+            {
+                product.Quantity = newQuantity.Value;
+            }
+
+            return true;
         }
 
 

@@ -24,7 +24,9 @@ namespace InventoryManagmentSystem
                     case "2":
                         ViewAllProducts(inventory);
                         break;
-
+                    case "3":
+                        EditProduct(inventory);
+                        break;
                     case "6":
                         running = false;
                         break;
@@ -122,7 +124,80 @@ namespace InventoryManagmentSystem
             Console.WriteLine(new string('-', header.Length));
             ShowInfo($"Total products: {products.Count}");
         }
+        private static void EditProduct(Inventory inventory)
+        {
+            ShowTitle("--- Edit a product ---");
 
+            string name = ReadRequiredText("Enter the name of the product to edit: ");
+            Product? product = inventory.FindProduct(name);
+
+            if (product == null)
+            {
+                ShowError($"Product '{name}' was not found.");
+                return;
+            }
+
+            ShowInfo("Current details:");
+            Console.WriteLine(product.GetDetails());
+            Console.WriteLine();
+            ShowInfo("Press Enter to keep a current value.");
+
+            Console.Write("New name: ");
+            string? newName = Console.ReadLine();
+            decimal? newPrice = ReadOptionalPrice("New price: ");
+            int? newQuantity = ReadOptionalQuantity("New quantity: ");
+
+            if (inventory.EditProduct(name, newName, newPrice, newQuantity))
+            {
+                ShowSuccess("Product updated successfully. New details:");
+                Console.WriteLine(product.GetDetails());
+            }
+            else
+            {
+                ShowError("Could not update: another product already uses that name. No changes were made.");
+            }
+        }
+        private static decimal? ReadOptionalPrice(string prompt)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                string? input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    return null;
+                }
+
+                if (decimal.TryParse(input, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value) && value >= 0)
+                {
+                    return value;
+                }
+
+                ShowError("Invalid price. Enter a number that is 0 or greater, or press Enter to keep the current one.");
+            }
+        }
+
+        private static int? ReadOptionalQuantity(string prompt)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                string? input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    return null;
+                }
+
+                if (int.TryParse(input, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value) && value >= 0)
+                {
+                    return value;
+                }
+
+                ShowError("Invalid quantity. Enter a whole number that is 0 or greater, or press Enter to keep the current one.");
+            }
+        }
         /// //////////////////////validations////////////////////////////////////////////////
 
         private static string ReadRequiredText(string prompt)
