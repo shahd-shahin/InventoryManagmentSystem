@@ -69,6 +69,20 @@ namespace InventoryManagmentSystem
             return true;
         }
 
+        public bool DeleteProduct(string name)
+        {
+            Product? product = FindProduct(name);
+
+            if (product == null)
+            {
+                return false;
+            }
+
+            return products.Remove(product);
+        }
+
+
+
 
     }
 

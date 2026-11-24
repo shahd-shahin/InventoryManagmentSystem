@@ -27,6 +27,12 @@ namespace InventoryManagmentSystem
                     case "3":
                         EditProduct(inventory);
                         break;
+                    case "4":
+                        DeleteProduct(inventory);
+                        break;
+                    case "5":
+                        SearchProduct(inventory);
+                        break;
                     case "6":
                         running = false;
                         break;
@@ -40,6 +46,8 @@ namespace InventoryManagmentSystem
                     PauseBeforeMenu();
                 }
             }
+            ShowSuccess("Thank you for using the Inventory Management System. Goodbye!");
+
         }
 
         private static void ShowMenu()
@@ -198,6 +206,41 @@ namespace InventoryManagmentSystem
                 ShowError("Invalid quantity. Enter a whole number that is 0 or greater, or press Enter to keep the current one.");
             }
         }
+
+
+        private static void DeleteProduct(Inventory inventory)
+        {
+            ShowTitle("--- Delete a product ---");
+
+            string name = ReadRequiredText("Enter the name of the product to delete: ");
+
+            if (inventory.DeleteProduct(name))
+            {
+                ShowSuccess($"Product '{name}' was deleted.");
+            }
+            else
+            {
+                ShowError($"Product '{name}' was not found.");
+            }
+        }
+
+        private static void SearchProduct(Inventory inventory)
+        {
+            ShowTitle("--- Search for a product ---");
+
+            string name = ReadRequiredText("Enter the product name to search for: ");
+            Product? product = inventory.FindProduct(name);
+
+            if (product == null)
+            {
+                ShowError($"Product '{name}' was not found.");
+                return;
+            }
+
+            ShowSuccess("Product found:");
+            Console.WriteLine(product.GetDetails());
+        }
+
         /// //////////////////////validations////////////////////////////////////////////////
 
         private static string ReadRequiredText(string prompt)
