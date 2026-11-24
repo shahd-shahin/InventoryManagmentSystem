@@ -31,6 +31,13 @@ namespace InventoryManagmentSystem
             products.Add(product);
             return true;
         }
+
+        public IReadOnlyList<Product> GetAllProducts()
+        {
+            return products.AsReadOnly();
+        }
+
+
     }
 
 

@@ -20,6 +20,11 @@ namespace InventoryManagmentSystem
                     case "1":
                         AddProduct(inventory);
                         break;
+
+                    case "2":
+                        ViewAllProducts(inventory);
+                        break;
+
                     case "6":
                         running = false;
                         break;
@@ -78,8 +83,47 @@ namespace InventoryManagmentSystem
                 ShowError("The product could not be added.");
             }
         }
+        private static void ViewAllProducts(Inventory inventory)
+        {
+            ShowTitle("--- All products ---");
 
-/// //////////////////////validations////////////////////////////////////////////////
+            IReadOnlyList<Product> products = inventory.GetAllProducts();
+
+            if (products.Count == 0)
+            {
+                ShowInfo("The inventory is empty.");
+                return;
+            }
+
+            int nameWidth = Math.Max("Name".Length, products.Max(p => p.Name.Length));
+            const int priceWidth = 12;
+            const int quantityWidth = 10;
+
+            string header = "#".PadRight(4)
+                + "Name".PadRight(nameWidth) + "  "
+                + "Price".PadLeft(priceWidth) + "  "
+                + "Quantity".PadLeft(quantityWidth);
+
+            Console.WriteLine(header);
+            Console.WriteLine(new string('-', header.Length));
+
+            for (int i = 0; i < products.Count; i++)
+            {
+                Product product = products[i];
+                string price = product.Price.ToString("F2", CultureInfo.InvariantCulture);
+
+                Console.WriteLine(
+                    (i + 1).ToString().PadRight(4)
+                    + product.Name.PadRight(nameWidth) + "  "
+                    + price.PadLeft(priceWidth) + "  "
+                    + product.Quantity.ToString().PadLeft(quantityWidth));
+            }
+
+            Console.WriteLine(new string('-', header.Length));
+            ShowInfo($"Total products: {products.Count}");
+        }
+
+        /// //////////////////////validations////////////////////////////////////////////////
 
         private static string ReadRequiredText(string prompt)
         {
